@@ -6367,6 +6367,13 @@
             
             pageData.forEach(item => {
                 const row = document.createElement('tr');
+
+                // Extract start page from 'pages'
+                const startPage = item.pages ? item.pages.match(/\d+/)?.[0] : null;
+                const pageLink = startPage ? `#page=${startPage}` : "";
+                const pdfLink = item.pdf 
+                  ? `<a href="${item.pdf}${pageLink}" target="_blank">Open PDF</a>` 
+                  : `<span style="color:gray;">Unavailable</span>`;
                 
                 row.innerHTML = `
                     <td class="volume">${item.volume}</td>
@@ -6376,9 +6383,7 @@
                     <td class="article">${item.article}</td>
                     <td class="author">${item.author || 'Various'}</td>
                     <td class="pages">${item.pages}</td>
-                    <td class="pdf">
-                    ${item.pdf ? `<a href="${item.pdf}" target="_blank">Open PDF</a>` : `<span style="color:gray;">Unavailable</span>`}
-                    </td>
+                    <td class="pdf">${pdfLink}</td>
                 `;
                 
                 tableBody.appendChild(row);
@@ -6776,6 +6781,7 @@
     </script>
 </body>
 </html>
+
 
 
 

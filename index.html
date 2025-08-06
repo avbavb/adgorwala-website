@@ -6399,6 +6399,7 @@
             const yearFilter = document.getElementById('yearFilter').value;
             const authorFilter = document.getElementById('authorFilter').value;
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const pdfFilter = document.getElementById('pdfFilter').value;
             
             filteredData = journalData.filter(item => {
                 const matchesVolume = !volumeFilter || item.volume === volumeFilter;
@@ -6407,8 +6408,9 @@
                 const matchesSearch = !searchTerm || 
                     item.article.toLowerCase().includes(searchTerm) || 
                     (item.author && item.author.toLowerCase().includes(searchTerm));
+                const matchesPDF = !pdfFilter || (pdfFilter === "available" && item.pdf);
                 
-                return matchesVolume && matchesYear && matchesAuthor && matchesSearch;
+                return matchesVolume && matchesYear && matchesAuthor && matchesSearch && matchesPDF;
             });
             
             // Apply sorting if any column was sorted
@@ -6774,6 +6776,7 @@
     </script>
 </body>
 </html>
+
 
 
 

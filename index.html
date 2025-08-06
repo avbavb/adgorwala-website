@@ -6377,9 +6377,9 @@
                     <td class="article">${item.article}</td>
                     <td class="author">${item.author || 'Various'}</td>
                     <td class="pages">${item.pages}</td>
-                    <td class="pdf">${item.pdf
-                        ? `<a href="${item.pdf}" target="_blank">Open PDF</a>` 
-                        : `<span style="color:gray;">Unavailable</span>`}</td>
+                    <td class="pdf">
+                    ${item.pdf ? `<a href="${item.pdf}" target="_blank">Open PDF</a>` : `<span style="color:gray;">Unavailable</span>`}
+                    </td>
                 `;
                 
                 tableBody.appendChild(row);
@@ -6776,6 +6776,7 @@
     </script>
 </body>
 </html>
+
 
 
 

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opinion — Digitised Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EAE3D2;
+    --paper-deep:#DFD6BF;
+    --ink:#211D17;
+    --ink-soft:#4A443A;
+    --stamp:#96332A;
+    --brass:#8E7136;
+    --slate:#3E4C59;
+    --card:#F4EFE3;
+    --rule: rgba(33,29,23,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(33,29,23,0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    line-height:1.5;
+  }
+  a{color:var(--slate);}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px 80px;}
+
+  /* Masthead */
+  .masthead{
+    padding:48px 24px 22px;
+    text-align:center;
+    border-bottom:3px double var(--ink);
+    margin-bottom:0;
+  }
+  .masthead .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--stamp);
+    margin-bottom:10px;
+  }
+  .masthead h1{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:clamp(42px,8vw,72px);
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .masthead .tagline{
+    font-style:italic;
+    color:var(--ink-soft);
+    margin-top:8px;
+    font-size:16px;
+  }
+  .masthead .meta-strip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:14px;
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+
+  /* Toolbar - styled like a library request slip */
+  .toolbar{
+    margin:28px 0 30px;
+    background:var(--card);
+    border:1px solid var(--rule);
+    padding:18px 20px;
+    display:grid;
+    grid-template-columns: 1fr auto auto;
+    gap:14px;
+    align-items:end;
+  }
+  .field label{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .field input, .field select{
+    width:100%;
+    font-family:'Source Serif 4', serif;
+    font-size:15px;
+    padding:8px 10px;
+    border:1px solid var(--ink-soft);
+    background:#fff;
+    color:var(--ink);
+  }
+  .toolbar .field.search{grid-column:1;}
+  @media (max-width:640px){
+    .toolbar{grid-template-columns:1fr; }
+  }
+
+  .result-count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin:0 2px 16px;
+  }
+
+  /* Issue card = catalogue card */
+  .issue{
+    display:grid;
+    grid-template-columns: 84px 1fr;
+    background:var(--card);
+    border:1px solid var(--rule);
+    margin-bottom:14px;
+    position:relative;
+  }
+  .issue .spine{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding:14px 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+  }
+  .issue .body{padding:16px 20px;}
+  .issue-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .issue-head .id{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--brass);
+  }
+  .issue-head .date{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .issue .flag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color:var(--stamp);
+    border:1px solid var(--stamp);
+    padding:2px 6px;
+    display:inline-block;
+    margin-top:6px;
+  }
+  .toggle-btn{
+    margin-top:10px;
+    background:none;
+    border:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.05em;
+    color:var(--slate);
+    cursor:pointer;
+    padding:0;
+  }
+  .toggle-btn:hover{text-decoration:underline;}
+  .scan-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.05em;
+    color:var(--stamp);
+    border:1px solid var(--stamp);
+    padding:5px 10px;
+    text-decoration:none;
+    white-space:nowrap;
+    transform:rotate(-1deg);
+    display:inline-block;
+  }
+  .scan-link:hover{background:var(--stamp);color:#fff;}
+
+  table.articles{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:14px;
+    font-size:14px;
+  }
+  table.articles th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    border-bottom:1px solid var(--ink);
+    padding:6px 8px;
+  }
+  table.articles td{
+    padding:6px 8px;
+    border-bottom:1px solid var(--rule);
+    vertical-align:top;
+  }
+  table.articles td.pages{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+
+  section.group-title{
+    font-family:'Newsreader', serif;
+    font-size:22px;
+    font-weight:600;
+    margin:44px 0 6px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:6px;
+  }
+
+  .empty, .loading, .error{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    padding:40px 10px;
+    text-align:center;
+  }
+  .error{color:var(--stamp);}
+  .setup-box{
+    max-width:640px;
+    margin:60px auto;
+    background:var(--card);
+    border:1px solid var(--rule);
+    padding:28px;
+    font-size:14px;
+  }
+  .setup-box h2{font-family:'Newsreader',serif;margin-top:0;}
+  .setup-box code{background:var(--paper-deep);padding:1px 5px;}
+
+  footer{
+    text-align:center;
+    margin-top:60px;
+    padding-top:20px;
+    border-top:1px solid var(--rule);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="eyebrow">The Digitised Archive</div>
+  <h1>Opinion</h1>
+  <div class="tagline">A weekly review founded by A. D. Gorwala, May 1960</div>
+  <div class="meta-strip" id="meta-strip"></div>
+</div>
+
+<div class="wrap">
+  <div class="toolbar">
+    <div class="field search">
+      <label for="q">Search title or author</label>
+      <input type="text" id="q" placeholder="e.g. Khushwant Singh, or Nehru…">
+    </div>
+    <div class="field">
+      <label for="series">Series</label>
+      <select id="series">
+        <option value="">All</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="sort">Sort</label>
+      <select id="sort">
+        <option value="date_desc">Newest first</option>
+        <option value="date_asc">Oldest first</option>
+        <option value="vol_asc">Volume ↑</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="result-count" class="result-count"></div>
+  <div id="issues-container"></div>
+
+  <div id="books-section" style="display:none;">
+    <div class="group-title">Books</div>
+    <div id="books-container"></div>
+  </div>
+
+  <footer id="footer-note"></footer>
+</div>
+
+<script>
+/* =========================================================
+   CONFIGURATION
+   Replace with your Google Sheet ID (from its URL) once the
+   'Opinion_Digitised_Database' workbook has been uploaded to
+   Google Sheets and File > Share > set to "Anyone with the
+   link can view".
+   ========================================================= */
+const SHEET_ID = "1Od94oL9NGCV5yIgpHwoNzaIwOZ7GWy3A";
+
+const SHEET_NAMES = {
+  issues: "Issues",
+  articles: "Articles",
+  books: "Books",
+  bookSections: "Book Sections"
+};
+
+function gvizUrl(sheetName){
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+}
+
+async function fetchSheet(sheetName){
+  const res = await fetch(gvizUrl(sheetName));
+  if(!res.ok) throw new Error(`Could not load sheet "${sheetName}" (HTTP ${res.status})`);
+  const text = await res.text();
+  const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}')+1);
+  const data = JSON.parse(jsonStr);
+  const cols = data.table.cols.map(c => c.label || c.id);
+  const rows = data.table.rows.map(r => {
+    const obj = {};
+    cols.forEach((c, i) => {
+      const cell = r.c[i];
+      obj[c] = cell ? (cell.f !== undefined && cell.f !== null ? cell.f : cell.v) : null;
+    });
+    return obj;
+  });
+  return rows;
+}
+
+let ISSUES = [], ARTICLES = [], BOOKS = [], SECTIONS = [];
+
+function fmtDate(d){
+  if(!d) return "—";
+  const dt = new Date(d);
+  if(isNaN(dt)) return d;
+  return dt.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+}
+
+function articlesFor(issueId){
+  return ARTICLES.filter(a => String(a.issue_id) === String(issueId));
+}
+
+function renderIssue(issue){
+  const arts = articlesFor(issue.issue_id);
+  const flag = issue.flags ? `<div class="flag">⚑ ${issue.flags}</div>` : "";
+  const label = issue.series === "Opinion Literary Quarterly"
+    ? `VOL ${issue.volume ?? "?"} · ${issue.raw_issue_no ?? ""}`
+    : `VOL ${issue.volume ?? "?"} / NO ${issue.issue_no ?? "?"}`;
+
+  const artRows = arts.map(a => `
+    <tr>
+      <td>${a.author ? escapeHtml(a.author) : '<em>—</em>'}</td>
+      <td>${escapeHtml(a.title || '')}</td>
+      <td class="pages">${a.pages ? escapeHtml(String(a.pages)) : '—'}</td>
+    </tr>`).join("");
+
+  const artTable = arts.length ? `
+    <table class="articles">
+      <thead><tr><th>Author</th><th>Title</th><th>Pages</th></tr></thead>
+      <tbody>${artRows}</tbody>
+    </table>` : `<p style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:12px;">No article-level index available for this issue yet.</p>`;
+
+  const div = document.createElement('div');
+  div.className = 'issue';
+  div.innerHTML = `
+    <div class="spine">${escapeHtml(label)}</div>
+    <div class="body">
+      <div class="issue-head">
+        <div>
+          <div class="id">${escapeHtml(issue.series || 'Opinion')}</div>
+          <div class="date">${fmtDate(issue.date)}</div>
+          ${flag}
+        </div>
+        <a class="scan-link" href="${issue.archive_url}" target="_blank" rel="noopener">VIEW SCAN →</a>
+      </div>
+      <button class="toggle-btn" data-open="false">▸ Show ${arts.length} article${arts.length===1?"":"s"}</button>
+      <div class="toc" style="display:none;">${artTable}</div>
+    </div>
+  `;
+  const btn = div.querySelector('.toggle-btn');
+  const toc = div.querySelector('.toc');
+  btn.addEventListener('click', () => {
+    const open = btn.dataset.open === "true";
+    toc.style.display = open ? "none" : "block";
+    btn.dataset.open = (!open).toString();
+    btn.textContent = (open ? "▸ Show " : "▾ Hide ") + arts.length + (open ? ` article${arts.length===1?"":"s"}` : "");
+  });
+  return div;
+}
+
+function renderBook(book){
+  const secs = SECTIONS.filter(s => String(s.book_id) === String(book.book_id));
+  const rows = secs.map(s => `<tr><td>${escapeHtml(s.section_title||'')}</td><td class="pages">${s.pages?escapeHtml(String(s.pages)):'—'}</td></tr>`).join("");
+  const div = document.createElement('div');
+  div.className = 'issue';
+  div.innerHTML = `
+    <div class="spine">BOOK</div>
+    <div class="body">
+      <div class="issue-head">
+        <div class="id">${escapeHtml(book.title)}</div>
+        <a class="scan-link" href="${book.archive_url}" target="_blank" rel="noopener">VIEW SCAN →</a>
+      </div>
+      <button class="toggle-btn" data-open="false">▸ Show contents</button>
+      <div class="toc" style="display:none;">
+        <table class="articles"><thead><tr><th>Section</th><th>Page</th></tr></thead><tbody>${rows}</tbody></table>
+      </div>
+    </div>`;
+  const btn = div.querySelector('.toggle-btn');
+  const toc = div.querySelector('.toc');
+  btn.addEventListener('click', () => {
+    const open = btn.dataset.open === "true";
+    toc.style.display = open ? "none" : "block";
+    btn.dataset.open = (!open).toString();
+    btn.textContent = (open ? "▸ Show contents" : "▾ Hide contents");
+  });
+  return div;
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function applyFiltersAndRender(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const seriesFilter = document.getElementById('series').value;
+  const sort = document.getElementById('sort').value;
+
+  let matchingIssueIds = null;
+  if(q){
+    matchingIssueIds = new Set();
+    ISSUES.forEach(iss => {
+      const haystack = [iss.series, iss.raw_issue_no].join(' ').toLowerCase();
+      if(haystack.includes(q)) matchingIssueIds.add(String(iss.issue_id));
+    });
+    ARTICLES.forEach(a => {
+      const haystack = [a.author, a.title].join(' ').toLowerCase();
+      if(haystack.includes(q)) matchingIssueIds.add(String(a.issue_id));
+    });
+  }
+
+  let filtered = ISSUES.filter(iss => {
+    if(seriesFilter && iss.series !== seriesFilter) return false;
+    if(matchingIssueIds && !matchingIssueIds.has(String(iss.issue_id))) return false;
+    return true;
+  });
+
+  filtered.sort((a,b) => {
+    if(sort === 'vol_asc') return (a.volume||0) - (b.volume||0);
+    const da = a.date ? new Date(a.date).getTime() : 0;
+    const db = b.date ? new Date(b.date).getTime() : 0;
+    return sort === 'date_asc' ? da-db : db-da;
+  });
+
+  const container = document.getElementById('issues-container');
+  container.innerHTML = "";
+  if(filtered.length === 0){
+    container.innerHTML = `<div class="empty">No issues match that search.</div>`;
+  } else {
+    filtered.forEach(iss => container.appendChild(renderIssue(iss)));
+  }
+  document.getElementById('result-count').textContent =
+    `${filtered.length} issue${filtered.length===1?"":"s"} shown · ${ARTICLES.length} articles indexed in total`;
+
+  // books only show when not filtering by search/series (they're a separate content type)
+  const booksSection = document.getElementById('books-section');
+  if(!q && !seriesFilter && BOOKS.length){
+    booksSection.style.display = "block";
+    const bc = document.getElementById('books-container');
+    bc.innerHTML = "";
+    BOOKS.forEach(b => bc.appendChild(renderBook(b)));
+  } else {
+    booksSection.style.display = "none";
+  }
+}
+
+function showSetupInstructions(err){
+  document.getElementById('issues-container').innerHTML = `
+    <div class="setup-box">
+      <h2>One step left: connect the database</h2>
+      <p>This page reads live from a Google Sheet, but it isn't connected yet.</p>
+      <ol>
+        <li>Upload <code>Opinion_Digitised_Database.xlsx</code> to Google Sheets (File → Import).</li>
+        <li>Share it: <code>Share → General access → Anyone with the link → Viewer</code>.</li>
+        <li>Copy the Sheet ID from its URL — the long string between <code>/d/</code> and <code>/edit</code>.</li>
+        <li>Open this file and replace <code>PASTE_YOUR_GOOGLE_SHEET_ID_HERE</code> near the top of the <code>&lt;script&gt;</code> with that ID.</li>
+      </ol>
+      <p style="color:var(--stamp);">${err ? escapeHtml(err.message) : ""}</p>
+    </div>`;
+}
+
+async function init(){
+  if(SHEET_ID === "PASTE_YOUR_GOOGLE_SHEET_ID_HERE"){
+    showSetupInstructions();
+    return;
+  }
+  document.getElementById('issues-container').innerHTML = `<div class="loading">Loading the archive…</div>`;
+  try{
+    [ISSUES, ARTICLES, BOOKS, SECTIONS] = await Promise.all([
+      fetchSheet(SHEET_NAMES.issues),
+      fetchSheet(SHEET_NAMES.articles),
+      fetchSheet(SHEET_NAMES.books),
+      fetchSheet(SHEET_NAMES.bookSections)
+    ]);
+
+    const seriesSel = document.getElementById('series');
+    const seriesSet = [...new Set(ISSUES.map(i => i.series).filter(Boolean))];
+    seriesSet.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      seriesSel.appendChild(opt);
+    });
+
+    const years = ISSUES.map(i => i.date && new Date(i.date).getFullYear()).filter(Boolean);
+    const minY = Math.min(...years), maxY = Math.max(...years);
+    document.getElementById('meta-strip').innerHTML =
+      `<span>${ISSUES.length} issues digitised</span><span>·</span><span>${ARTICLES.length} articles indexed</span><span>·</span><span>${minY}–${maxY}</span>`;
+    document.getElementById('footer-note').textContent =
+      `Source scans hosted on the Internet Archive · Data last synced ${new Date().toLocaleString('en-GB')}`;
+
+    document.getElementById('q').addEventListener('input', applyFiltersAndRender);
+    document.getElementById('series').addEventListener('change', applyFiltersAndRender);
+    document.getElementById('sort').addEventListener('change', applyFiltersAndRender);
+
+    applyFiltersAndRender();
+  }catch(err){
+    console.error(err);
+    document.getElementById('issues-container').innerHTML = `<div class="error">Could not load the archive: ${escapeHtml(err.message)}<br><br>Make sure the Google Sheet is shared as "Anyone with the link can view".</div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

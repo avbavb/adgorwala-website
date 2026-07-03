@@ -631,7 +631,8 @@
   <div class="howto-box">
     <h2>How to Use This Archive</h2>
     <p>
-      Use the <a href="#toolbar">search and filter controls</a> to browse by title, author, or series,
+      Replace this paragraph with your own explanation of how the archive works.
+      For example: use the <a href="#toolbar">search and filter controls</a> to browse by title, author, or series,
       or <a href="#fulltext-search">search inside the scans</a> to find a phrase anywhere in the OCR'd text of a digitised issue.
       Or, if you'd rather not search at all, try <a href="#surprise-box">jumping to a random issue</a>.
     </p>
@@ -729,7 +730,7 @@
    Google Sheets and File > Share > set to "Anyone with the
    link can view".
    ========================================================= */
-const SHEET_ID = "1RoiyRmLEn9rTEMQwmhMwBoseVxQDsIlqm_MXuRuJoGs";
+const SHEET_ID = "PASTE_YOUR_GOOGLE_SHEET_ID_HERE";
 
 const SHEET_NAMES = {
   issues: "Issues",
@@ -765,10 +766,32 @@ let CURRENT_POOL = [];
 let SEARCH_INDEX = [];
 let LAST_SURPRISE = null;
 
+// Google's gviz API sometimes leaks its raw internal date format through as
+// a literal string like "Date(1980,0,9)" (constructor-call notation, month
+// 0-indexed) rather than a normal date string - this happens when a cell's
+// human-formatted value is missing, which occurs for a few genuinely messy
+// dates in this dataset. JS's generic Date parser mangles that string badly
+// (observed producing wildly wrong years). Parse that format explicitly
+// instead of leaving it to chance.
+function parseIssueDate(v){
+  if(!v) return null;
+  const gvizMatch = String(v).match(/^Date\((\d+),(\d+),(\d+)\)$/);
+  if(gvizMatch){
+    const [, y, m, d] = gvizMatch.map(Number);
+    return new Date(y, m, d);
+  }
+  const dt = new Date(v);
+  if(isNaN(dt)) return null;
+  // Sanity bound: this publication ran 1960-1983. Anything wildly outside
+  // that is a parsing artifact, not a real date, however it arose.
+  const y = dt.getFullYear();
+  if(y < 1900 || y > 2100) return null;
+  return dt;
+}
+
 function fmtDate(d){
-  if(!d) return "—";
-  const dt = new Date(d);
-  if(isNaN(dt)) return d;
+  const dt = parseIssueDate(d);
+  if(!dt) return d ? String(d) : "—";
   return dt.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
 }
 
@@ -1116,8 +1139,8 @@ function applyFiltersAndRender(){
   });
 
   filtered.sort((a,b) => {
-    const da = a.date ? new Date(a.date).getTime() : 0;
-    const db = b.date ? new Date(b.date).getTime() : 0;
+    const da = parseIssueDate(a.date)?.getTime() ?? 0;
+    const db = parseIssueDate(b.date)?.getTime() ?? 0;
     return sort === 'date_asc' ? da-db : db-da;
   });
 
@@ -1240,7 +1263,7 @@ async function init(){
       has_ocr_text: toTriBool(row.has_ocr_text)
     }));
 
-    const years = ISSUES.map(i => i.date && new Date(i.date).getFullYear()).filter(Boolean);
+    const years = ISSUES.map(i => parseIssueDate(i.date)?.getFullYear()).filter(Boolean);
     const minY = Math.min(...years), maxY = Math.max(...years);
     const digitisedCount = ISSUES.filter(i => i.is_digitised).length;
     document.getElementById('meta-strip').innerHTML =

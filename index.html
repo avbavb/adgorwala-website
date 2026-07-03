@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="A digitised archive of Opinion, the weekly review founded by A. D. Gorwala in 1960 — about Gorwala, this project, and its contributors.">
+<meta name="theme-color" content="#EAE3D2">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23211D17'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23EAE3D2' text-anchor='middle'%3EO%3C/text%3E%3C/svg%3E">
+<title>Opinion — Digitised Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EAE3D2;
+    --paper-deep:#DFD6BF;
+    --ink:#211D17;
+    --ink-soft:#4A443A;
+    --stamp:#96332A;
+    --brass:#8E7136;
+    --brass-text:#715A2B;
+    --slate:#3E4C59;
+    --card:#F4EFE3;
+    --rule: rgba(33,29,23,0.18);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:rgba(150,51,42,0.25);}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(33,29,23,0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    line-height:1.6;
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  a{color:var(--slate);}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px 80px;}
+
+  .masthead{
+    padding:48px 24px 22px;
+    text-align:center;
+    border-bottom:3px double var(--ink);
+  }
+  .masthead .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--stamp);
+    margin-bottom:10px;
+  }
+  .masthead h1{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:clamp(42px,8vw,72px);
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .masthead .tagline{
+    font-style:italic;
+    color:var(--ink-soft);
+    margin-top:8px;
+    font-size:16px;
+  }
+  .nav-links{
+    margin-top:16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+  }
+  .nav-links a{
+    color:var(--stamp);
+    text-decoration:none;
+    letter-spacing:0.04em;
+    display:inline-block;
+    padding:6px 4px;
+  }
+  .nav-links a:hover{text-decoration:underline;}
+
+  section.entry{
+    background:var(--card);
+    border:1px solid var(--rule);
+    padding:28px 30px;
+    margin-top:28px;
+  }
+  section.entry h2{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:26px;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  section.entry .section-label{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--brass-text);
+    margin-bottom:8px;
+  }
+  section.entry p{margin:14px 0 0;font-size:16px;}
+  section.entry p:first-of-type{margin-top:14px;}
+  section.entry .byline{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:16px;
+  }
+
+  .subsection{
+    margin-top:24px;
+    padding-top:20px;
+    border-top:1px dashed var(--rule);
+  }
+  .subsection h3{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:18px;
+    margin:0 0 12px;
+    color:var(--ink);
+  }
+  ul.writings{list-style:none;margin:0;padding:0;}
+  ul.writings > li{
+    margin-bottom:12px;
+    padding-left:18px;
+    position:relative;
+    font-size:15px;
+  }
+  ul.writings > li::before{
+    content:"—";
+    position:absolute;
+    left:0;
+    color:var(--brass);
+  }
+  ul.writings .pub{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  ul.writings-nested{
+    list-style:none;
+    margin:10px 0 0 18px;
+    padding:0;
+  }
+  ul.writings-nested li{
+    margin-bottom:8px;
+    padding-left:16px;
+    position:relative;
+    font-size:14px;
+  }
+  ul.writings-nested li::before{
+    content:"·";
+    position:absolute;
+    left:0;
+    color:var(--brass);
+  }
+  ul.writings a, ul.writings-nested a{
+    color:var(--stamp);
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+  ul.writings a:hover, ul.writings-nested a:hover{color:var(--ink);}
+  .pdf-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+  section.entry ul.credits{
+    list-style:none;
+    margin:14px 0 0;
+    padding:0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 14px;
+    font-size:15px;
+  }
+  section.entry ul.credits li::before{
+    content:"— ";
+    color:var(--brass);
+  }
+  section.entry a{color:var(--stamp);text-decoration:underline;text-underline-offset:2px;}
+  section.entry a:hover{color:var(--ink);}
+
+  .cta-row{
+    margin-top:36px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .cta-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--stamp);
+    border:1px solid var(--stamp);
+    padding:12px 18px;
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+    text-decoration:none;
+  }
+  .cta-link:hover{background:var(--stamp);color:#fff;}
+
+  footer{
+    text-align:center;
+    margin-top:60px;
+    padding-top:20px;
+    border-top:1px solid var(--rule);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+
+  a:focus-visible,
+  button:focus-visible{
+    outline:2px solid var(--stamp);
+    outline-offset:2px;
+  }
+
+  .skip-link{
+    position:absolute;
+    left:-9999px;
+    top:0;
+    background:var(--ink);
+    color:var(--paper);
+    padding:12px 18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    z-index:100;
+    text-decoration:none;
+  }
+  .skip-link:focus{left:12px;top:12px;}
+
+  @media (max-width:768px){
+    .wrap{padding:0 18px 60px;}
+    .masthead{padding:40px 18px 20px;}
+  }
+  @media (max-width:600px){
+    .masthead{padding:32px 14px 18px;}
+    .wrap{padding:0 12px 50px;}
+    section.entry{padding:20px 18px;}
+    section.entry ul.credits{gap:6px 12px;font-size:14px;}
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="masthead">
+  <div class="eyebrow">The Digitised Archive</div>
+  <h1>Opinion</h1>
+  <div class="tagline">A weekly review founded by A. D. Gorwala, May 1960</div>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="issues.html">Browse Issues →</a> · <a href="books.html">Standalone Books →</a>
+  </nav>
+</header>
+
+<main class="wrap" id="main">
+
+  <section class="entry" aria-labelledby="about-gorwala">
+    <span class="section-label">Section One</span>
+    <h2 id="about-gorwala">About A. D. Gorwala</h2>
+    <p>Astad Dinshaw Gorwala (1900–1989) was a Parsi civil servant, administrator, and later journalist. He joined the Indian Civil Service in 1924 and served in Sindh and in the Bombay secretariat, eventually becoming the province's Director of Civil Supplies, where he set up the wartime food rationing system that kept Bombay fed through the shortages of the Second World War — work for which he was appointed a Companion of the Order of the Indian Empire in 1944.</p>
+    <p>In 1947, months before independence, Gorwala resigned from the Civil Service in protest at the government's refusal to take food shortages seriously. He remained close to the Nehruvian administrative project through the early 1950s, authoring the influential 1951 Report on Public Administration and chairing the 1955 All-India Rural Credit Survey Report, whose recommendations led to the creation of the State Bank of India.</p>
+    <p>By the late 1950s his politics had turned firmly critical of the establishment, and in May 1960 he founded <em>Opinion</em>, a weekly review through which he wrote against corruption, administrative overreach, and the abuse of state power. His confrontations with Indira Gandhi's government sharpened during the Emergency (1975–77): when <em>Opinion</em> was ordered shut down, Gorwala managed to print one final issue condemning the regime — an episode later documented in the Shah Commission's enquiry into Emergency-era excesses.</p>
+
+    <div class="subsection">
+      <h3>Writings about Gorwala</h3>
+      <ul class="writings">
+        <li>Ashok Mahadevan, <a href="https://www.readersdigest.in/true-stories/story-the-man--who-would-not-be-silent-124855" target="_blank" rel="noopener">"Astad Dinshah Gorwala, The Man Who Would Not Be Silent"</a> <span class="pub">(Reader's Digest, July 2019)</span></li>
+        <li>Ramachandra Guha, <a href="https://ramachandraguha.in/archives/kashmir-then-as-now.html" target="_blank" rel="noopener">"Kashmir, Then as Now"</a> <span class="pub">(The Hindu, November 2006)</span></li>
+        <li>
+          Selections from <em>Say Not the Struggle: Essays in Honour of A. D. Gorwala</em> <span class="pub">(OUP, 1976)</span> — a Festschrift edited by H. M. Patel and presented to Gorwala on his 75th birthday:
+          <ul class="writings-nested">
+            <li>H. M. Patel, <a href="https://archive.org/details/patel76saynot-Introduction" target="_blank" rel="noopener">Introduction</a> <span class="pdf-tag">[<a href="https://archive.org/download/patel76saynot-Introduction/patel76saynot-Introduction.pdf" target="_blank" rel="noopener">pdf</a>]</span></li>
+            <li>H. M. Patel, <a href="https://archive.org/details/patel76saynot-gorwalas-justice" target="_blank" rel="noopener">Gorwala's Justice</a> <span class="pdf-tag">[<a href="https://archive.org/download/patel76saynot-gorwalas-justice/patel76saynot-gorwalas-justice.pdf" target="_blank" rel="noopener">pdf</a>]</span></li>
+            <li>Gauri Deshpande, <a href="https://archive.org/details/deshpande76saynot-editor" target="_blank" rel="noopener">The Editor</a> <span class="pdf-tag">[<a href="https://archive.org/download/deshpande76saynot-editor/deshpande76saynot-editor.pdf" target="_blank" rel="noopener">pdf</a>]</span></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="entry" aria-labelledby="about-website">
+    <span class="section-label">Section Two</span>
+    <h2 id="about-website">About This Website</h2>
+    <p>This site exists to catalogue Gorwala's life and work, as part of a wider effort to document histories of political dissent in independent India. It brings together a complete issue-by-issue index of <em>Opinion</em> alongside digitised scans of the issues that have been recovered so far, so that both the full run of the periodical and its surviving copies can be browsed and searched in one place.</p>
+    <p>The underlying catalogue and the digitised scans are maintained as a shared, editable database, so that newly recovered issues can be added and indexed without needing to rebuild the site itself.</p>
+    <p class="byline">Maintained by Arudra Burra, Associate Professor, Department of Humanities and Social Sciences, IIT Delhi.</p>
+  </section>
+
+  <section class="entry" aria-labelledby="acknowledgements">
+    <span class="section-label">Section Three</span>
+    <h2 id="acknowledgements">Acknowledgements</h2>
+    <p>The material on this site has been collected and assembled over several years, through the work of a number of research assistants:</p>
+    <ul class="credits">
+      <li>Adarsh Priyadarshi</li>
+      <li>Akash Dabaniya</li>
+      <li>Bani Bedi</li>
+      <li>Devanshi Sarin</li>
+      <li>Hardik</li>
+      <li>Sidharth Goel</li>
+      <li>Sonali Chugh</li>
+      <li>Vipul</li>
+    </ul>
+    <p>Digitised scans are hosted by the Internet Archive. Where an issue has not yet been recovered or digitised, the catalogue entry remains in place so the gap itself is part of the record.</p>
+  </section>
+
+  <div class="cta-row">
+    <a class="cta-link" href="issues.html">Browse the Issues →</a>
+    <a class="cta-link" href="books.html">See the Books →</a>
+  </div>
+
+  <footer>Opinion, founded May 1960 · This is an independent research archive, not affiliated with the original publication.</footer>
+</main>
+
+</body>
+</html>

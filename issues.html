@@ -95,10 +95,49 @@
     background:var(--card);
     border:1px solid var(--rule);
     padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .toolbar-row{
     display:grid;
-    grid-template-columns: 1fr auto auto auto auto;
     gap:14px;
     align-items:end;
+  }
+  /* minmax(0,Nfr) rather than plain auto: fixed proportions that can still
+     shrink, so a long author name or option text can never balloon a column
+     and squeeze its neighbours - the bug this replaced. */
+  .toolbar-row-single{grid-template-columns: 1fr;}
+  .toolbar-row-bottom{grid-template-columns: minmax(0,1fr) minmax(0,1fr);}
+  .toolbar-row-series{
+    grid-template-columns: auto 1fr;
+    align-items:center;
+  }
+  .field-label-standalone{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-soft);
+  }
+  .checkbox-group{display:flex;gap:20px;flex-wrap:wrap;}
+  .checkbox-label{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Source Serif 4', serif;
+    font-size:16px;
+    color:var(--ink);
+    cursor:pointer;
+    min-height:44px;
+    padding:6px 4px;
+  }
+  .checkbox-label input[type="checkbox"]{
+    width:20px;
+    height:20px;
+    accent-color:var(--ink);
+    cursor:pointer;
+    flex-shrink:0;
   }
   .field label{
     display:block;
@@ -119,7 +158,6 @@
     color:var(--ink);
     min-height:44px;
   }
-  .toolbar .field.search{grid-column:1;}
   .surprise-btn{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
@@ -144,7 +182,8 @@
     .issue.flash{animation:none;outline:2px solid var(--brass);}
   }
   @media (max-width:640px){
-    .toolbar{grid-template-columns:1fr; }
+    .toolbar-row-bottom{grid-template-columns:1fr;}
+    .toolbar-row-series{grid-template-columns:1fr;gap:8px;}
   }
 
   .result-count{
@@ -606,11 +645,10 @@
         <p>Jump to a random issue instead of browsing. Pick what to draw from below, then roll the dice.</p>
       </div>
       <div class="surprise-controls">
-        <select id="surprise-series" aria-label="Series to draw from">
-          <option value="">All series</option>
-          <option value="opinion">Opinion</option>
-          <option value="litq">Opinion Literary Quarterly</option>
-        </select>
+        <div class="checkbox-group" role="group" aria-label="Series to draw from">
+          <label class="checkbox-label"><input type="checkbox" id="surprise-series-opinion" checked> Opinion</label>
+          <label class="checkbox-label"><input type="checkbox" id="surprise-series-litq" checked> Lit. Quarterly</label>
+        </div>
         <select id="surprise-view" aria-label="Digitised only or full catalogue">
           <option value="digitised">Digitised only</option>
           <option value="all">Full catalogue</option>
@@ -622,37 +660,45 @@
   </div>
 
   <div class="toolbar" id="toolbar">
-    <div class="field search">
-      <label for="q">Search title or author</label>
-      <input type="text" id="q" placeholder="e.g. Khushwant Singh, or Nehru…">
+    <div class="toolbar-row toolbar-row-single">
+      <div class="field search">
+        <label for="q">Search title or author</label>
+        <input type="text" id="q" placeholder="e.g. Khushwant Singh, or Nehru…">
+      </div>
     </div>
-    <div class="field">
-      <label for="authorFilter">Author</label>
-      <select id="authorFilter">
-        <option value="">Browse by author</option>
-      </select>
+
+    <div class="toolbar-row toolbar-row-single">
+      <div class="field">
+        <label for="authorFilter">Author</label>
+        <select id="authorFilter">
+          <option value="">Browse by author</option>
+        </select>
+      </div>
     </div>
-    <div class="field">
-      <label for="series">Series</label>
-      <select id="series">
-        <option value="">All series</option>
-        <option value="opinion">Opinion</option>
-        <option value="litq">Opinion Literary Quarterly</option>
-      </select>
+
+    <div class="toolbar-row toolbar-row-series">
+      <span class="field-label-standalone">Series</span>
+      <div class="checkbox-group" role="group" aria-label="Filter by series">
+        <label class="checkbox-label"><input type="checkbox" id="series-opinion" checked> Opinion</label>
+        <label class="checkbox-label"><input type="checkbox" id="series-litq" checked> Opinion Literary Quarterly</label>
+      </div>
     </div>
-    <div class="field">
-      <label for="view">Show</label>
-      <select id="view">
-        <option value="digitised">Digitised only</option>
-        <option value="all">Full catalogue</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="sort">Sort</label>
-      <select id="sort">
-        <option value="date_desc">Newest first</option>
-        <option value="date_asc">Oldest first</option>
-      </select>
+
+    <div class="toolbar-row toolbar-row-bottom">
+      <div class="field">
+        <label for="view">Show</label>
+        <select id="view">
+          <option value="digitised">Digitised only</option>
+          <option value="all">Full catalogue</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="sort">Sort</label>
+        <select id="sort">
+          <option value="date_desc">Newest first</option>
+          <option value="date_asc">Oldest first</option>
+        </select>
+      </div>
     </div>
   </div>
   <a class="back-to-top" onclick="scrollToTop(event)">↑ Back to top</a>
@@ -684,7 +730,7 @@
    Google Sheets and File > Share > set to "Anyone with the
    link can view".
    ========================================================= */
-const SHEET_ID = "1RoiyRmLEn9rTEMQwmhMwBoseVxQDsIlqm_MXuRuJoGs";
+const SHEET_ID = "PASTE_YOUR_GOOGLE_SHEET_ID_HERE";
 
 const SHEET_NAMES = {
   issues: "Issues",
@@ -1021,7 +1067,8 @@ function applyFiltersAndRender(){
   const q = document.getElementById('q').value.trim().toLowerCase();
   const authorFilter = document.getElementById('authorFilter').value; // '' | '__NONE__' | exact author name
   const view = document.getElementById('view').value; // 'digitised' | 'all'
-  const seriesFilter = document.getElementById('series').value; // '' | 'opinion' | 'litq'
+  const showOpinion = document.getElementById('series-opinion').checked;
+  const showLitq = document.getElementById('series-litq').checked;
   const sort = document.getElementById('sort').value;
 
   let matchingIssueIds = null, matchingLitqIds = null;
@@ -1053,14 +1100,14 @@ function applyFiltersAndRender(){
   }
 
   let filtered = ISSUES.filter(iss => {
-    if(seriesFilter === 'litq') return false;
+    if(!showOpinion) return false;
     if(view === 'digitised' && !iss.is_digitised) return false;
     if(matchingIssueIds && !matchingIssueIds.has(String(iss.issue_id))) return false;
     if(authorIssueIds && !authorIssueIds.has(String(iss.issue_id))) return false;
     return true;
   });
   let filteredLitq = LITQ_ISSUES.filter(iss => {
-    if(seriesFilter === 'opinion') return false;
+    if(!showLitq) return false;
     // every Literary Quarterly entry in this dataset is digitised - there's no
     // separate "not digitised" set tracked for this series - so it isn't
     // affected by the Show toggle the way the main Opinion series is.
@@ -1132,8 +1179,23 @@ function toTriBool(v){
 
 function linkSelects(sourceId, targetId){
   document.getElementById(sourceId).addEventListener('change', () => {
-    document.getElementById(targetId).value = document.getElementById(sourceId).value;
-    applyFiltersAndRender();
+    const source = document.getElementById(sourceId);
+    const target = document.getElementById(targetId);
+    if(target.value !== source.value){
+      target.value = source.value;
+      target.dispatchEvent(new Event('change'));
+    }
+  });
+}
+
+function linkCheckboxes(sourceId, targetId){
+  document.getElementById(sourceId).addEventListener('change', () => {
+    const source = document.getElementById(sourceId);
+    const target = document.getElementById(targetId);
+    if(target.checked !== source.checked){
+      target.checked = source.checked;
+      target.dispatchEvent(new Event('change'));
+    }
   });
 }
 
@@ -1192,12 +1254,18 @@ async function init(){
     document.getElementById('sort').addEventListener('change', applyFiltersAndRender);
     document.getElementById('surprise-btn').addEventListener('click', surpriseMe);
 
+    document.getElementById('series-opinion').addEventListener('change', applyFiltersAndRender);
+    document.getElementById('series-litq').addEventListener('change', applyFiltersAndRender);
+    document.getElementById('view').addEventListener('change', applyFiltersAndRender);
+
     // The Surprise Me box has its own copies of Series/Show so people don't
     // need to scroll down to the toolbar first. Each pair stays in sync in
     // both directions, and each change (from either copy) re-renders once -
     // so the visible list always matches what Surprise Me is drawing from.
-    linkSelects('series', 'surprise-series');
-    linkSelects('surprise-series', 'series');
+    linkCheckboxes('series-opinion', 'surprise-series-opinion');
+    linkCheckboxes('surprise-series-opinion', 'series-opinion');
+    linkCheckboxes('series-litq', 'surprise-series-litq');
+    linkCheckboxes('surprise-series-litq', 'series-litq');
     linkSelects('view', 'surprise-view');
     linkSelects('surprise-view', 'view');
 

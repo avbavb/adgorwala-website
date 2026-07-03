@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Standalone books published outside the Opinion weekly periodical, digitised and indexed.">
+<meta name="theme-color" content="#EAE3D2">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23211D17'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23EAE3D2' text-anchor='middle'%3EO%3C/text%3E%3C/svg%3E">
+<title>Opinion — Books</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EAE3D2;
+    --paper-deep:#DFD6BF;
+    --ink:#211D17;
+    --ink-soft:#4A443A;
+    --stamp:#96332A;
+    --brass:#8E7136;
+    --slate:#3E4C59;
+    --card:#F4EFE3;
+    --rule: rgba(33,29,23,0.18);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:rgba(150,51,42,0.25);}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(33,29,23,0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    line-height:1.5;
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  a{color:var(--slate);}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px 80px;}
+
+  .masthead{
+    padding:48px 24px 22px;
+    text-align:center;
+    border-bottom:3px double var(--ink);
+  }
+  .masthead .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--stamp);
+    margin-bottom:10px;
+  }
+  .masthead h1{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:clamp(36px,7vw,58px);
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .masthead .tagline{
+    font-style:italic;
+    color:var(--ink-soft);
+    margin-top:8px;
+    font-size:16px;
+  }
+  .nav-links{
+    margin-top:16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+  }
+  .nav-links a{color:var(--stamp);text-decoration:none;letter-spacing:0.04em;}
+  .nav-links a:hover{text-decoration:underline;}
+
+  .result-count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin:32px 2px 16px;
+  }
+
+  .book{
+    display:grid;
+    grid-template-columns: 84px 1fr;
+    background:var(--card);
+    border:1px solid var(--rule);
+    margin-bottom:14px;
+    content-visibility:auto;
+    contain-intrinsic-size:auto 140px;
+  }
+  .book .spine{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding:14px 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .book .body{padding:16px 20px;min-width:0;}
+  .book-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .book-head .title{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:19px;
+    color:var(--ink);
+  }
+  .toggle-btn{
+    margin:10px 0;
+    background:none;
+    border:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.05em;
+    color:var(--slate);
+    cursor:pointer;
+    padding:10px 0;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    text-align:left;
+  }
+  .toggle-btn:hover{text-decoration:underline;}
+
+  .book .toc{
+    display:none;
+    overflow:hidden;
+  }
+  .book.pinned .toc{
+    display:block;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .book:hover .toc{
+      display:block;
+    }
+  }
+  .scan-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.05em;
+    color:var(--stamp);
+    border:1px solid var(--stamp);
+    padding:9px 12px;
+    text-decoration:none;
+    white-space:nowrap;
+    transform:rotate(-1deg);
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+  }
+  .scan-link:hover{background:var(--stamp);color:#fff;}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .pdf-link{
+    border-color:var(--brass);
+    color:var(--brass);
+  }
+  .pdf-link:hover{background:var(--brass);color:#fff;}
+
+  .table-scroll{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    margin-top:14px;
+  }
+  table.sections{
+    width:100%;
+    min-width:340px;
+    border-collapse:collapse;
+    font-size:14px;
+  }
+  table.sections th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    border-bottom:1px solid var(--ink);
+    padding:6px 8px;
+  }
+  table.sections td{
+    padding:6px 8px;
+    border-bottom:1px solid var(--rule);
+    vertical-align:top;
+  }
+  table.sections td.pages{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+
+  .back-to-top{
+    display:inline-block;
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    text-decoration:none;
+    cursor:pointer;
+  }
+  .back-to-top:hover{color:var(--stamp);text-decoration:underline;}
+
+  .empty, .loading, .error{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    padding:40px 10px;
+    text-align:center;
+  }
+  .error{color:var(--stamp);}
+  .setup-box{
+    max-width:640px;
+    margin:60px auto;
+    background:var(--card);
+    border:1px solid var(--rule);
+    padding:28px;
+    font-size:14px;
+  }
+  .setup-box h2{font-family:'Newsreader',serif;margin-top:0;}
+  .setup-box code{background:var(--paper-deep);padding:1px 5px;}
+
+  footer{
+    text-align:center;
+    margin-top:60px;
+    padding-top:20px;
+    border-top:1px solid var(--rule);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+
+  a:focus-visible,
+  button:focus-visible{
+    outline:2px solid var(--stamp);
+    outline-offset:2px;
+  }
+
+  .skip-link{
+    position:absolute;
+    left:-9999px;
+    top:0;
+    background:var(--ink);
+    color:var(--paper);
+    padding:12px 18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    z-index:100;
+    text-decoration:none;
+  }
+  .skip-link:focus{
+    left:12px;
+    top:12px;
+  }
+
+  @media (max-width:768px){
+    .wrap{padding:0 18px 60px;}
+    .masthead{padding:40px 18px 20px;}
+  }
+
+  @media (max-width:600px){
+    .masthead{padding:32px 14px 18px;}
+    .wrap{padding:0 12px 50px;}
+    .book{grid-template-columns:48px 1fr;}
+    .book .spine{font-size:9px;padding:10px 4px;}
+    .book .body{padding:14px 14px;}
+    .book-head{flex-direction:column;align-items:flex-start;gap:10px;}
+    .actions{align-self:flex-start;}
+    table.sections{min-width:300px;font-size:13px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to books listing</a>
+
+<header class="masthead">
+  <div class="eyebrow">The Digitised Archive</div>
+  <h1>Books</h1>
+  <div class="tagline">Standalone books, separate from the weekly periodical</div>
+  <nav class="nav-links" aria-label="Site navigation"><a href="index.html">← Home</a> · <a href="issues.html">Browse Opinion Issues →</a></nav>
+</header>
+
+<main class="wrap" id="main">
+  <div id="result-count" class="result-count" aria-live="polite"></div>
+  <div id="books-container"></div>
+  <footer id="footer-note"></footer>
+</main>
+
+<script>
+/* Uses the same Google Sheet as issues.html - paste the same Sheet ID here. */
+const SHEET_ID = "PASTE_YOUR_GOOGLE_SHEET_ID_HERE";
+
+const SHEET_NAMES = { books: "Books", bookSections: "Book Sections" };
+
+function gvizUrl(sheetName){
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+}
+
+async function fetchSheet(sheetName){
+  const res = await fetch(gvizUrl(sheetName));
+  if(!res.ok) throw new Error(`Could not load sheet "${sheetName}" (HTTP ${res.status})`);
+  const text = await res.text();
+  const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}')+1);
+  const data = JSON.parse(jsonStr);
+  const cols = data.table.cols.map(c => c.label || c.id);
+  return data.table.rows.map(r => {
+    const obj = {};
+    cols.forEach((c, i) => {
+      const cell = r.c[i];
+      obj[c] = cell ? (cell.f !== undefined && cell.f !== null ? cell.f : cell.v) : null;
+    });
+    return obj;
+  });
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+const HAS_HOVER = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+function pinHint(open){
+  if(HAS_HOVER) return open ? " — pinned open (click to unpin)" : " — hover to preview, click to pin";
+  return open ? " — tap to close" : " — tap to view";
+}
+
+function scrollToTop(e){
+  if(e) e.stopPropagation();
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({top: 0, behavior: reduceMotion ? 'auto' : 'smooth'});
+}
+
+async function openArchivePdf(e){
+  e.preventDefault();
+  const btn = e.currentTarget;
+  const detailsUrl = btn.dataset.url;
+  const m = detailsUrl.match(/\/details\/([^\/]+)/);
+  const win = window.open('', '_blank');
+  if(!m){
+    if(win) win.location.href = detailsUrl;
+    return;
+  }
+  const identifier = m[1];
+  const original = btn.textContent;
+  btn.textContent = 'PDF…';
+  try{
+    const res = await fetch(`https://archive.org/metadata/${identifier}`);
+    const data = await res.json();
+    const pdfFile = (data.files || []).find(f => f.name && f.name.toLowerCase().endsWith('.pdf'));
+    const target = pdfFile
+      ? `https://archive.org/download/${identifier}/${encodeURIComponent(pdfFile.name)}`
+      : detailsUrl;
+    if(win) win.location.href = target;
+    else window.open(target, '_blank', 'noopener');
+  }catch(err){
+    console.error('PDF lookup failed:', err);
+    if(win) win.location.href = detailsUrl;
+    else window.open(detailsUrl, '_blank', 'noopener');
+  }finally{
+    btn.textContent = original;
+  }
+}
+
+function renderBook(book, sections){
+  const secs = sections.filter(s => String(s.book_id) === String(book.book_id));
+  const rows = secs.map(s => `<tr><td>${escapeHtml(s.section_title||'')}</td><td class="pages">${s.pages?escapeHtml(String(s.pages)):'—'}</td></tr>`).join("");
+  const artTable = secs.length ? `
+    <div class="table-scroll"><table class="sections"><thead><tr><th>Section</th><th>Page</th></tr></thead><tbody>${rows}</tbody></table></div>`
+    : `<p style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:12px;">No section-level index available.</p>`;
+
+  const div = document.createElement('div');
+  div.className = 'book';
+  const tocId = `toc-book-${book.book_id}`;
+  div.innerHTML = `
+    <div class="spine">BOOK</div>
+    <div class="body">
+      <div class="book-head">
+        <div class="title">${escapeHtml(book.title)}</div>
+        <div class="actions">
+          <a class="scan-link" href="${book.archive_url}" target="_blank" rel="noopener">VIEW SCAN →</a>
+          <a class="scan-link pdf-link" href="${book.archive_url}" data-url="${book.archive_url}" onclick="openArchivePdf(event)" target="_blank" rel="noopener">PDF ↓</a>
+        </div>
+      </div>
+      <button class="toggle-btn" data-open="false" aria-controls="${tocId}">▸ ${secs.length} section${secs.length===1?"":"s"}${pinHint(false)}</button>
+      <div class="toc" id="${tocId}">${artTable}<a class="back-to-top" onclick="scrollToTop(event)">↑ Back to top</a></div>
+    </div>`;
+  const btn = div.querySelector('.toggle-btn');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.addEventListener('click', () => {
+    const open = btn.dataset.open === "true";
+    div.classList.toggle('pinned', !open);
+    btn.dataset.open = (!open).toString();
+    btn.setAttribute('aria-expanded', (!open).toString());
+    btn.textContent = (open ? "▸ " : "▾ ") + secs.length + ` section${secs.length===1?"":"s"}` + pinHint(!open);
+  });
+  return div;
+}
+
+function showSetupInstructions(){
+  document.getElementById('books-container').innerHTML = `
+    <div class="setup-box">
+      <h2>One step left: connect the database</h2>
+      <p>This page reads live from the same Google Sheet as the main archive.</p>
+      <ol>
+        <li>Open <code>issues.html</code> and copy the Sheet ID you already pasted there.</li>
+        <li>Paste that same ID into <code>books.html</code>, replacing <code>PASTE_YOUR_GOOGLE_SHEET_ID_HERE</code> near the top of its <code>&lt;script&gt;</code> tag.</li>
+      </ol>
+    </div>`;
+}
+
+async function init(){
+  if(SHEET_ID === "PASTE_YOUR_GOOGLE_SHEET_ID_HERE"){
+    showSetupInstructions();
+    return;
+  }
+  document.getElementById('books-container').innerHTML = `<div class="loading">Loading the books…</div>`;
+  try{
+    const [books, sections] = await Promise.all([
+      fetchSheet(SHEET_NAMES.books),
+      fetchSheet(SHEET_NAMES.bookSections)
+    ]);
+    document.getElementById('result-count').textContent = `${books.length} book${books.length===1?"":"s"}`;
+    document.getElementById('footer-note').textContent =
+      `Source scans hosted on the Internet Archive · Data last synced ${new Date().toLocaleString('en-GB')}`;
+    const container = document.getElementById('books-container');
+    container.innerHTML = "";
+    if(books.length === 0){
+      container.innerHTML = `<div class="empty">No books catalogued yet.</div>`;
+    } else {
+      books.forEach(b => container.appendChild(renderBook(b, sections)));
+    }
+  }catch(err){
+    console.error(err);
+    document.getElementById('books-container').innerHTML = `<div class="error">Could not load the books: ${escapeHtml(err.message)}<br><br>Make sure the Google Sheet is shared as "Anyone with the link can view".</div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

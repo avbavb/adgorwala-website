@@ -96,7 +96,7 @@
     border:1px solid var(--rule);
     padding:18px 20px;
     display:grid;
-    grid-template-columns: 1fr auto auto auto;
+    grid-template-columns: 1fr auto auto auto auto;
     gap:14px;
     align-items:end;
   }
@@ -152,6 +152,87 @@
     font-size:11px;
     color:var(--ink-soft);
     margin:0 2px 16px;
+  }
+
+  .litq-caveat{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--stamp);
+    border:1px solid var(--stamp);
+    padding:10px 14px;
+    margin:0 0 16px;
+    background:var(--card);
+  }
+
+  .howto-box{
+    background:var(--card);
+    border:1px solid var(--rule);
+    padding:22px 24px;
+    margin:28px 0 0;
+  }
+  .howto-box h2{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 10px;
+    color:var(--ink);
+  }
+  .howto-box p{
+    font-size:16px;
+    margin:0;
+    color:var(--ink);
+  }
+  .howto-box p a{
+    color:var(--stamp);
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+  .howto-box p a:hover{color:var(--ink);}
+  .howto-box p + p{margin-top:12px;}
+
+  .surprise-box{
+    background:var(--card);
+    border:1px solid var(--rule);
+    padding:22px 24px;
+    margin:16px 0 0;
+  }
+  .surprise-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .surprise-controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .surprise-controls select{
+    font-family:'Source Serif 4', serif;
+    font-size:15px;
+    padding:10px 12px;
+    border:1px solid var(--ink-soft);
+    background:#fff;
+    color:var(--ink);
+    min-height:44px;
+  }
+  .surprise-text h2{
+    font-family:'Newsreader', serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+  .surprise-text p{
+    font-size:15px;
+    margin:0;
+    color:var(--ink-soft);
+    max-width:56ch;
+  }
+  .surprise-box .surprise-btn{
+    flex-shrink:0;
   }
 
   .fulltext-box{
@@ -266,7 +347,7 @@
   .issue-head .id{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
-    color:var(--brass);
+    color:var(--brass-text);
   }
   .issue-head .date{
     font-family:'IBM Plex Mono', monospace;
@@ -338,7 +419,7 @@
   .actions{display:flex;gap:8px;flex-wrap:wrap;}
   .pdf-link{
     border-color:var(--brass);
-    color:var(--brass);
+    color:var(--brass-text);
   }
   .pdf-link:hover{background:var(--brass);color:#fff;}
 
@@ -377,7 +458,9 @@
 
   .back-to-top{
     display:inline-block;
-    margin-top:10px;
+    margin-top:6px;
+    padding:10px 4px;
+    min-height:24px;
     font-family:'IBM Plex Mono', monospace;
     font-size:10px;
     letter-spacing:0.06em;
@@ -387,15 +470,6 @@
     cursor:pointer;
   }
   .back-to-top:hover{color:var(--stamp);text-decoration:underline;}
-
-  section.group-title{
-    font-family:'Newsreader', serif;
-    font-size:22px;
-    font-weight:600;
-    margin:44px 0 6px;
-    border-bottom:2px solid var(--ink);
-    padding-bottom:6px;
-  }
 
   .empty, .loading, .error{
     font-family:'IBM Plex Mono', monospace;
@@ -414,7 +488,12 @@
     font-size:14px;
   }
   .setup-box h2{font-family:'Newsreader',serif;margin-top:0;}
-  .setup-box code{background:var(--paper-deep);padding:1px 5px;}
+  .setup-box code{
+    background:var(--paper-deep);
+    padding:1px 5px;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+  }
 
   footer{
     text-align:center;
@@ -457,6 +536,11 @@
     .wrap{padding:0 18px 60px;}
     .masthead{padding:40px 18px 20px;}
     .toolbar{padding:16px;}
+    .howto-box{padding:18px 18px;}
+    .surprise-box{padding:18px 18px;}
+    .surprise-row{flex-direction:column;align-items:flex-start;}
+    .surprise-controls{width:100%;flex-direction:column;align-items:stretch;}
+    .surprise-controls select, .surprise-controls .surprise-btn{width:100%;}
   }
 
   /* Mobile */
@@ -465,20 +549,20 @@
     .wrap{padding:0 12px 50px;}
     .masthead .meta-strip{gap:10px;font-size:10px;}
 
-    .issue, .book{grid-template-columns:48px 1fr;}
-    .issue .spine, .book .spine{
+    .issue{grid-template-columns:48px 1fr;}
+    .issue .spine{
       font-size:9px;
       padding:10px 4px;
       letter-spacing:0.03em;
     }
-    .issue .body, .book .body{padding:14px 14px;}
-    .issue-head, .book-head{
+    .issue .body{padding:14px 14px;}
+    .issue-head{
       flex-direction:column;
       align-items:flex-start;
       gap:10px;
     }
     .actions{align-self:flex-start;}
-    table.articles, table.sections{min-width:380px;font-size:13px;}
+    table.articles{min-width:380px;font-size:13px;}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -498,10 +582,63 @@
 </header>
 
 <main class="wrap" id="main">
-  <div class="toolbar">
+
+  <!-- ============================================================
+       EDIT ME: replace the paragraph below with your own text.
+       This box is plain static HTML - nothing here is pulled from
+       the Google Sheet, so changes only need a re-upload of this
+       file, not a database edit.
+       ============================================================ -->
+  <div class="howto-box">
+    <h2>How to Use This Archive</h2>
+    <p>
+      Replace this paragraph with your own explanation of how the archive works.
+      For example: use the <a href="#toolbar">search and filter controls</a> to browse by title, author, or series,
+      or <a href="#fulltext-search">search inside the scans</a> to find a phrase anywhere in the OCR'd text of a digitised issue.
+      Or, if you'd rather not search at all, try <a href="#surprise-box">jumping to a random issue</a>.
+    </p>
+  </div>
+
+  <div class="surprise-box" id="surprise-box">
+    <div class="surprise-row">
+      <div class="surprise-text">
+        <h2>Feeling Curious?</h2>
+        <p>Jump to a random issue instead of browsing. Pick what to draw from below, then roll the dice.</p>
+      </div>
+      <div class="surprise-controls">
+        <select id="surprise-series" aria-label="Series to draw from">
+          <option value="">All series</option>
+          <option value="opinion">Opinion</option>
+          <option value="litq">Opinion Literary Quarterly</option>
+        </select>
+        <select id="surprise-view" aria-label="Digitised only or full catalogue">
+          <option value="digitised">Digitised only</option>
+          <option value="all">Full catalogue</option>
+        </select>
+        <button type="button" id="surprise-btn" class="surprise-btn">🎲 Surprise me</button>
+      </div>
+    </div>
+    <a class="back-to-top" onclick="scrollToTop(event)">↑ Back to top</a>
+  </div>
+
+  <div class="toolbar" id="toolbar">
     <div class="field search">
       <label for="q">Search title or author</label>
       <input type="text" id="q" placeholder="e.g. Khushwant Singh, or Nehru…">
+    </div>
+    <div class="field">
+      <label for="authorFilter">Author</label>
+      <select id="authorFilter">
+        <option value="">Browse by author</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="series">Series</label>
+      <select id="series">
+        <option value="">All series</option>
+        <option value="opinion">Opinion</option>
+        <option value="litq">Opinion Literary Quarterly</option>
+      </select>
     </div>
     <div class="field">
       <label for="view">Show</label>
@@ -517,22 +654,23 @@
         <option value="date_asc">Oldest first</option>
       </select>
     </div>
-    <div class="field">
-      <label for="surprise-btn">&nbsp;</label>
-      <button type="button" id="surprise-btn" class="surprise-btn">🎲 Surprise me</button>
-    </div>
   </div>
+  <a class="back-to-top" onclick="scrollToTop(event)">↑ Back to top</a>
 
-  <div class="fulltext-box">
+  <div class="fulltext-box" id="fulltext-search">
     <div class="fulltext-head">
       <label for="qInside">🔎 Search inside the scans (OCR text)</label>
       <span class="fulltext-note" id="fulltext-coverage">Loading search index…</span>
     </div>
     <input type="text" id="qInside" placeholder="e.g. Kashmir, Emergency, corruption…" disabled>
     <div id="fulltext-results" aria-live="polite"></div>
+    <a class="back-to-top" onclick="scrollToTop(event)">↑ Back to top</a>
   </div>
 
   <div id="result-count" class="result-count" aria-live="polite"></div>
+  <div id="litq-caveat" class="litq-caveat" style="display:none;">
+    ⚑ As far as is currently known, only four issues of the Opinion Literary Quarterly were ever published. The digitised copies shown here are what's been recovered so far, not necessarily the complete run.
+  </div>
   <div id="issues-container"></div>
 
   <footer id="footer-note"></footer>
@@ -542,11 +680,11 @@
 /* =========================================================
    CONFIGURATION
    Replace with your Google Sheet ID (from its URL) once the
-   'Opinion_Digitised_Database' workbook has been uploaded to
+   'Opinion_Master_Database' workbook has been uploaded to
    Google Sheets and File > Share > set to "Anyone with the
    link can view".
    ========================================================= */
-const SHEET_ID = "1RoiyRmLEn9rTEMQwmhMwBoseVxQDsIlqm_MXuRuJoGs";
+const SHEET_ID = "PASTE_YOUR_GOOGLE_SHEET_ID_HERE";
 
 const SHEET_NAMES = {
   issues: "Issues",
@@ -881,7 +1019,9 @@ function attachPinToggle(div, count, noun){
 
 function applyFiltersAndRender(){
   const q = document.getElementById('q').value.trim().toLowerCase();
+  const authorFilter = document.getElementById('authorFilter').value; // '' | '__NONE__' | exact author name
   const view = document.getElementById('view').value; // 'digitised' | 'all'
+  const seriesFilter = document.getElementById('series').value; // '' | 'opinion' | 'litq'
   const sort = document.getElementById('sort').value;
 
   let matchingIssueIds = null, matchingLitqIds = null;
@@ -902,14 +1042,30 @@ function applyFiltersAndRender(){
     });
   }
 
+  let authorIssueIds = null, authorLitqIds = null;
+  if(authorFilter){
+    authorIssueIds = new Set();
+    authorLitqIds = new Set();
+    const isBlank = a => !a || !String(a).trim();
+    const matchesAuthor = a => authorFilter === '__NONE__' ? isBlank(a) : (a && String(a).trim() === authorFilter);
+    ARTICLES.forEach(a => { if(matchesAuthor(a.author)) authorIssueIds.add(String(a.issue_id)); });
+    LITQ_ARTICLES.forEach(a => { if(matchesAuthor(a.author)) authorLitqIds.add(String(a.issue_id)); });
+  }
+
   let filtered = ISSUES.filter(iss => {
+    if(seriesFilter === 'litq') return false;
     if(view === 'digitised' && !iss.is_digitised) return false;
     if(matchingIssueIds && !matchingIssueIds.has(String(iss.issue_id))) return false;
+    if(authorIssueIds && !authorIssueIds.has(String(iss.issue_id))) return false;
     return true;
   });
   let filteredLitq = LITQ_ISSUES.filter(iss => {
-    if(view === 'digitised') return false; // literary quarterly has no non-digitised entries tracked yet
+    if(seriesFilter === 'opinion') return false;
+    // every Literary Quarterly entry in this dataset is digitised - there's no
+    // separate "not digitised" set tracked for this series - so it isn't
+    // affected by the Show toggle the way the main Opinion series is.
     if(matchingLitqIds && !matchingLitqIds.has(String(iss.issue_id))) return false;
+    if(authorLitqIds && !authorLitqIds.has(String(iss.issue_id))) return false;
     return true;
   });
 
@@ -926,9 +1082,9 @@ function applyFiltersAndRender(){
   } else {
     filtered.forEach(iss => container.appendChild(renderIssue(iss)));
     filteredLitq.forEach(iss => container.appendChild(renderLitqIssue(iss)));
-    if(q){
-      // a search is active - expand every result's table of contents automatically
-      // rather than making the person click through each one individually
+    if(q || authorFilter){
+      // a search or author filter is active - expand every result's table of
+      // contents automatically rather than making the person click through each one
       container.querySelectorAll('.toggle-btn').forEach(btn => {
         if(btn.dataset.open !== 'true') btn.click();
       });
@@ -938,6 +1094,8 @@ function applyFiltersAndRender(){
   document.getElementById('result-count').textContent =
     `${totalShown} issue${totalShown===1?"":"s"} shown` +
     (view === 'digitised' ? ` (of ${ISSUES.length + LITQ_ISSUES.length} in the full catalogue)` : ` · ${ARTICLES.length + LITQ_ARTICLES.length} articles indexed in total`);
+
+  document.getElementById('litq-caveat').style.display = filteredLitq.length > 0 ? 'block' : 'none';
 
   CURRENT_POOL = filtered.map(i => ({type:'issue', id:i.issue_id}))
     .concat(filteredLitq.map(i => ({type:'litq', id:i.issue_id})));
@@ -949,7 +1107,7 @@ function showSetupInstructions(err){
       <h2>One step left: connect the database</h2>
       <p>This page reads live from a Google Sheet, but it isn't connected yet.</p>
       <ol>
-        <li>Upload <code>Opinion_Digitised_Database.xlsx</code> to Google Sheets (File → Import).</li>
+        <li>Upload <code>Opinion_Master_Database.xlsx</code> to Google Sheets (File → Import).</li>
         <li>Share it: <code>Share → General access → Anyone with the link → Viewer</code>.</li>
         <li>Copy the Sheet ID from its URL — the long string between <code>/d/</code> and <code>/edit</code>.</li>
         <li>Open this file and replace <code>PASTE_YOUR_GOOGLE_SHEET_ID_HERE</code> near the top of the <code>&lt;script&gt;</code> with that ID.</li>
@@ -970,6 +1128,35 @@ function toTriBool(v){
   if(s === 'TRUE') return true;
   if(s === 'FALSE') return false;
   return null;
+}
+
+function linkSelects(sourceId, targetId){
+  document.getElementById(sourceId).addEventListener('change', () => {
+    document.getElementById(targetId).value = document.getElementById(sourceId).value;
+    applyFiltersAndRender();
+  });
+}
+
+function populateAuthorDropdown(){
+  const sel = document.getElementById('authorFilter');
+  const authorsSet = new Set();
+  let hasBlankAuthor = false;
+
+  [...ARTICLES, ...LITQ_ARTICLES].forEach(a => {
+    const name = a.author ? String(a.author).trim() : '';
+    if(name) authorsSet.add(name);
+    else hasBlankAuthor = true;
+  });
+
+  const authors = [...authorsSet].sort((a, b) => a.localeCompare(b, undefined, {sensitivity: 'base'}));
+
+  let html = `<option value="">Browse by author</option>`;
+  if(hasBlankAuthor){
+    html += `<option value="__NONE__">(No author listed)</option>`;
+  }
+  html += authors.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+
+  sel.innerHTML = html;
 }
 
 async function init(){
@@ -1001,10 +1188,20 @@ async function init(){
       `Source scans hosted on the Internet Archive · Data last synced ${new Date().toLocaleString('en-GB')}`;
 
     document.getElementById('q').addEventListener('input', debounce(applyFiltersAndRender, 180));
-    document.getElementById('view').addEventListener('change', applyFiltersAndRender);
+    document.getElementById('authorFilter').addEventListener('change', applyFiltersAndRender);
     document.getElementById('sort').addEventListener('change', applyFiltersAndRender);
     document.getElementById('surprise-btn').addEventListener('click', surpriseMe);
 
+    // The Surprise Me box has its own copies of Series/Show so people don't
+    // need to scroll down to the toolbar first. Each pair stays in sync in
+    // both directions, and each change (from either copy) re-renders once -
+    // so the visible list always matches what Surprise Me is drawing from.
+    linkSelects('series', 'surprise-series');
+    linkSelects('surprise-series', 'series');
+    linkSelects('view', 'surprise-view');
+    linkSelects('surprise-view', 'view');
+
+    populateAuthorDropdown();
     applyFiltersAndRender();
     loadSearchIndex(); // independent of the main data load; a missing index shouldn't break the page
   }catch(err){

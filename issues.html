@@ -17,6 +17,7 @@
     --ink-soft:#4A443A;
     --stamp:#96332A;
     --brass:#8E7136;
+    --brass-text:#715A2B;
     --slate:#3E4C59;
     --card:#F4EFE3;
     --rule: rgba(33,29,23,0.18);
@@ -153,6 +154,82 @@
     margin:0 2px 16px;
   }
 
+  .fulltext-box{
+    margin:24px 0 0;
+    background:var(--card);
+    border:1px dashed var(--brass);
+    padding:18px 20px 20px;
+  }
+  .fulltext-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .fulltext-head label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink);
+  }
+  .fulltext-note{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color:var(--ink-soft);
+  }
+  #qInside{
+    width:100%;
+    font-family:'Source Serif 4', serif;
+    font-size:16px;
+    padding:10px 12px;
+    border:1px solid var(--ink-soft);
+    background:#fff;
+    color:var(--ink);
+    min-height:44px;
+  }
+  #qInside:disabled{background:var(--paper-deep);color:var(--ink-soft);}
+  .fulltext-hint{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin:14px 2px 0;
+  }
+  .fulltext-issue{
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid var(--rule);
+  }
+  .fulltext-issue-head{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--brass-text);
+    margin-bottom:8px;
+  }
+  ul.fulltext-pages{list-style:none;margin:0;padding:0;}
+  ul.fulltext-pages li{margin-bottom:10px;}
+  ul.fulltext-pages a{
+    color:var(--stamp);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+  }
+  ul.fulltext-pages a:hover{color:var(--ink);}
+  .snippet{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    line-height:1.5;
+  }
+  .snippet mark{
+    background:#F0DCA0;
+    color:var(--ink);
+    padding:0 2px;
+  }
+
   /* Issue card = catalogue card */
   .issue{
     display:grid;
@@ -201,6 +278,15 @@
     font-size:10px;
     color:var(--stamp);
     border:1px solid var(--stamp);
+    padding:2px 6px;
+    display:inline-block;
+    margin-top:6px;
+  }
+  .issue .ocr-pending{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color:var(--ink-soft);
+    border:1px dashed var(--brass);
     padding:2px 6px;
     display:inline-block;
     margin-top:6px;
@@ -438,6 +524,15 @@
     </div>
   </div>
 
+  <div class="fulltext-box">
+    <div class="fulltext-head">
+      <label for="qInside">🔎 Search inside the scans (OCR text)</label>
+      <span class="fulltext-note" id="fulltext-coverage">Loading search index…</span>
+    </div>
+    <input type="text" id="qInside" placeholder="e.g. Kashmir, Emergency, corruption…" disabled>
+    <div id="fulltext-results" aria-live="polite"></div>
+  </div>
+
   <div id="result-count" class="result-count" aria-live="polite"></div>
   <div id="issues-container"></div>
 
@@ -452,7 +547,7 @@
    Google Sheets and File > Share > set to "Anyone with the
    link can view".
    ========================================================= */
-const SHEET_ID = "1RoiyRmLEn9rTEMQwmhMwBoseVxQDsIlqm_MXuRuJoGs";
+const SHEET_ID = "PASTE_YOUR_GOOGLE_SHEET_ID_HERE";
 
 const SHEET_NAMES = {
   issues: "Issues",
@@ -485,6 +580,7 @@ async function fetchSheet(sheetName){
 
 let ISSUES = [], ARTICLES = [], LITQ_ISSUES = [], LITQ_ARTICLES = [];
 let CURRENT_POOL = [];
+let SEARCH_INDEX = [];
 let LAST_SURPRISE = null;
 
 function fmtDate(d){
@@ -516,6 +612,10 @@ function renderIssue(issue){
       <tbody>${artRows}</tbody>
     </table></div>` : `<p style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:12px;">No article-level index available for this issue yet.</p>`;
 
+  const ocrNote = (issue.is_digitised && issue.has_ocr_text === false)
+    ? `<div class="ocr-pending">⚑ scan available, not yet full-text searchable (OCR pending on Archive.org)</div>`
+    : '';
+
   const scanLink = issue.is_digitised && issue.archive_url
     ? `<div class="actions">
         <a class="scan-link" href="${issue.archive_url}" target="_blank" rel="noopener">VIEW SCAN →</a>
@@ -535,6 +635,7 @@ function renderIssue(issue){
           <div class="id">Opinion</div>
           <div class="date">${fmtDate(issue.date)}</div>
           ${flag}
+          ${ocrNote}
         </div>
         ${scanLink}
       </div>
@@ -605,6 +706,103 @@ function scrollToTop(e){
   if(e) e.stopPropagation();
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   window.scrollTo({top: 0, behavior: reduceMotion ? 'auto' : 'smooth'});
+}
+
+function buildSnippet(text, query){
+  const lower = text.toLowerCase();
+  const idx = lower.indexOf(query.toLowerCase());
+  if(idx === -1) return '';
+  const start = Math.max(0, idx - 60);
+  const end = Math.min(text.length, idx + query.length + 100);
+  const before = escapeHtml(text.slice(start, idx));
+  const match = escapeHtml(text.slice(idx, idx + query.length));
+  const after = escapeHtml(text.slice(idx + query.length, end));
+  return (start > 0 ? '…' : '') + before + '<mark>' + match + '</mark>' + after + (end < text.length ? '…' : '');
+}
+
+function searchInsideScans(query){
+  const q = query.toLowerCase();
+  const hits = [];
+  for(const entry of SEARCH_INDEX){
+    if(entry.text.toLowerCase().includes(q)){
+      hits.push(entry);
+      if(hits.length >= 600) break; // safety cap on a pathological common-word query
+    }
+  }
+  return hits;
+}
+
+function renderFulltextResults(){
+  const query = document.getElementById('qInside').value.trim();
+  const container = document.getElementById('fulltext-results');
+
+  if(query.length === 0){
+    container.innerHTML = '';
+    return;
+  }
+  if(query.length < 3){
+    container.innerHTML = `<p class="fulltext-hint">Keep typing — at least 3 characters.</p>`;
+    return;
+  }
+
+  const hits = searchInsideScans(query);
+  if(hits.length === 0){
+    container.innerHTML = `<p class="fulltext-hint">No matches found inside the scanned text.</p>`;
+    return;
+  }
+
+  const byIssue = new Map();
+  for(const h of hits){
+    if(!byIssue.has(h.issue_id)) byIssue.set(h.issue_id, []);
+    byIssue.get(h.issue_id).push(h);
+  }
+  const issueIds = [...byIssue.keys()];
+  const shown = issueIds.slice(0, 40);
+  const truncatedNote = issueIds.length > shown.length
+    ? ` (showing the first 40 — narrow your search for more precise results)` : '';
+
+  let html = `<p class="fulltext-hint">${hits.length} matching page${hits.length===1?'':'s'} across ${issueIds.length} issue${issueIds.length===1?'':'s'}${truncatedNote}</p>`;
+
+  for(const issueId of shown){
+    const pages = byIssue.get(issueId);
+    const issue = ISSUES.find(i => String(i.issue_id) === String(issueId));
+    const identifier = pages[0].identifier;
+    const label = issue
+      ? `Vol ${issue.volume_roman_numeral || issue.volume} / No ${issue.issue_no}${issue.date ? ' · ' + fmtDate(issue.date) : ''}`
+      : `Issue ${issueId}`;
+
+    const pageLinks = pages.slice(0, 8).map(p => `
+      <li>
+        <a href="https://archive.org/details/${identifier}/page/n${p.leaf}" target="_blank" rel="noopener">Page ${p.leaf + 1} →</a>
+        <div class="snippet">${buildSnippet(p.text, query)}</div>
+      </li>`).join('');
+
+    html += `
+      <div class="fulltext-issue">
+        <div class="fulltext-issue-head">${escapeHtml(label)}</div>
+        <ul class="fulltext-pages">${pageLinks}</ul>
+      </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+async function loadSearchIndex(){
+  const noteEl = document.getElementById('fulltext-coverage');
+  const inputEl = document.getElementById('qInside');
+  try{
+    const res = await fetch('search-index.json');
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    SEARCH_INDEX = await res.json();
+    const coveredIdentifiers = new Set(SEARCH_INDEX.map(e => e.identifier));
+    const digitisedCount = ISSUES.filter(i => i.is_digitised).length;
+    noteEl.textContent = `Searching within ${coveredIdentifiers.size} of ${digitisedCount} digitised issues`;
+    inputEl.disabled = false;
+    inputEl.addEventListener('input', debounce(renderFulltextResults, 200));
+  }catch(err){
+    console.error('Could not load search-index.json:', err);
+    noteEl.textContent = 'Full-text search index not found on this server yet.';
+  }
 }
 
 function surpriseMe(){
@@ -783,6 +981,7 @@ async function init(){
     document.getElementById('surprise-btn').addEventListener('click', surpriseMe);
 
     applyFiltersAndRender();
+    loadSearchIndex(); // independent of the main data load; a missing index shouldn't break the page
   }catch(err){
     console.error(err);
     document.getElementById('issues-container').innerHTML = `<div class="error">Could not load the archive: ${escapeHtml(err.message)}<br><br>Make sure the Google Sheet is shared as "Anyone with the link can view".</div>`;

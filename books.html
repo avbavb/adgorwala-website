@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Standalone books published outside the Opinion weekly periodical, digitised and indexed.">
+<meta name="description" content="Standalone books by A. D. Gorwala, digitised on the Internet Archive.">
 <meta name="theme-color" content="#EAE3D2">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23211D17'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='38' fill='%23EAE3D2' text-anchor='middle'%3EO%3C/text%3E%3C/svg%3E">
 <title>Opinion — Books</title>
@@ -17,6 +17,7 @@
     --ink-soft:#4A443A;
     --stamp:#96332A;
     --brass:#8E7136;
+    --brass-text:#715A2B;
     --slate:#3E4C59;
     --card:#F4EFE3;
     --rule: rgba(33,29,23,0.18);
@@ -35,7 +36,7 @@
     padding-bottom:env(safe-area-inset-bottom);
   }
   a{color:var(--slate);}
-  .wrap{max-width:920px;margin:0 auto;padding:0 24px 80px;}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px 80px;}
 
   .masthead{
     padding:48px 24px 22px;
@@ -68,7 +69,13 @@
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
   }
-  .nav-links a{color:var(--stamp);text-decoration:none;letter-spacing:0.04em;}
+  .nav-links a{
+    color:var(--stamp);
+    text-decoration:none;
+    letter-spacing:0.04em;
+    display:inline-block;
+    padding:6px 4px;
+  }
   .nav-links a:hover{text-decoration:underline;}
 
   .result-count{
@@ -78,138 +85,53 @@
     margin:32px 2px 16px;
   }
 
-  .book{
-    display:grid;
-    grid-template-columns: 84px 1fr;
-    background:var(--card);
-    border:1px solid var(--rule);
-    margin-bottom:14px;
-    content-visibility:auto;
-    contain-intrinsic-size:auto 140px;
+  .book-entry{
+    padding:20px 0;
+    border-bottom:1px solid var(--rule);
   }
-  .book .spine{
-    background:var(--ink);
-    color:var(--paper);
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11px;
-    letter-spacing:0.06em;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    padding:14px 8px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .book .body{padding:16px 20px;min-width:0;}
-  .book-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:14px;
-    flex-wrap:wrap;
-  }
-  .book-head .title{
+  .book-entry:first-of-type{border-top:1px solid var(--rule);}
+  .book-title{
     font-family:'Newsreader', serif;
     font-weight:600;
-    font-size:19px;
+    font-size:21px;
+    margin:0 0 6px;
     color:var(--ink);
   }
-  .toggle-btn{
-    margin:10px 0;
-    background:none;
-    border:none;
+  .book-citation{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0 0 8px;
+  }
+  .book-citation.missing{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
-    letter-spacing:0.05em;
-    color:var(--slate);
-    cursor:pointer;
-    padding:10px 0;
-    min-height:44px;
-    display:flex;
-    align-items:center;
-    text-align:left;
+    letter-spacing:0.02em;
+    color:var(--brass-text);
   }
-  .toggle-btn:hover{text-decoration:underline;}
-
-  .book .toc{
-    display:none;
-    overflow:hidden;
+  .book-description{
+    font-size:15px;
+    color:var(--ink);
+    margin:0 0 10px;
   }
-  .book.pinned .toc{
-    display:block;
-  }
-  @media (hover:hover) and (pointer:fine){
-    .book:hover .toc{
-      display:block;
-    }
-  }
-  .scan-link{
+  .book-description:empty{display:none;}
+  .book-entry .scan-link{
     font-family:'IBM Plex Mono', monospace;
-    font-size:11px;
+    font-size:12px;
     letter-spacing:0.05em;
     color:var(--stamp);
-    border:1px solid var(--stamp);
-    padding:9px 12px;
     text-decoration:none;
-    white-space:nowrap;
-    transform:rotate(-1deg);
-    display:inline-flex;
-    align-items:center;
-    min-height:44px;
+    border-bottom:1px solid var(--stamp);
+    padding-bottom:1px;
+    display:inline-block;
+    min-height:24px;
   }
-  .scan-link:hover{background:var(--stamp);color:#fff;}
-  .actions{display:flex;gap:8px;flex-wrap:wrap;}
-  .pdf-link{
-    border-color:var(--brass);
-    color:var(--brass);
-  }
-  .pdf-link:hover{background:var(--brass);color:#fff;}
-
-  .table-scroll{
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    margin-top:14px;
-  }
-  table.sections{
-    width:100%;
-    min-width:340px;
-    border-collapse:collapse;
-    font-size:14px;
-  }
-  table.sections th{
-    text-align:left;
-    font-family:'IBM Plex Mono', monospace;
-    font-size:10px;
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-    color:var(--ink-soft);
-    border-bottom:1px solid var(--ink);
-    padding:6px 8px;
-  }
-  table.sections td{
-    padding:6px 8px;
-    border-bottom:1px solid var(--rule);
-    vertical-align:top;
-  }
-  table.sections td.pages{
+  .book-entry .scan-link:hover{color:var(--ink);border-color:var(--ink);}
+  .book-entry .no-scan{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
     color:var(--ink-soft);
-    white-space:nowrap;
+    opacity:0.6;
   }
-
-  .back-to-top{
-    display:inline-block;
-    margin-top:10px;
-    font-family:'IBM Plex Mono', monospace;
-    font-size:10px;
-    letter-spacing:0.06em;
-    text-transform:uppercase;
-    color:var(--ink-soft);
-    text-decoration:none;
-    cursor:pointer;
-  }
-  .back-to-top:hover{color:var(--stamp);text-decoration:underline;}
 
   .empty, .loading, .error{
     font-family:'IBM Plex Mono', monospace;
@@ -228,7 +150,12 @@
     font-size:14px;
   }
   .setup-box h2{font-family:'Newsreader',serif;margin-top:0;}
-  .setup-box code{background:var(--paper-deep);padding:1px 5px;}
+  .setup-box code{
+    background:var(--paper-deep);
+    padding:1px 5px;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+  }
 
   footer{
     text-align:center;
@@ -258,27 +185,16 @@
     z-index:100;
     text-decoration:none;
   }
-  .skip-link:focus{
-    left:12px;
-    top:12px;
-  }
+  .skip-link:focus{left:12px;top:12px;}
 
   @media (max-width:768px){
     .wrap{padding:0 18px 60px;}
     .masthead{padding:40px 18px 20px;}
   }
-
   @media (max-width:600px){
     .masthead{padding:32px 14px 18px;}
     .wrap{padding:0 12px 50px;}
-    .book{grid-template-columns:48px 1fr;}
-    .book .spine{font-size:9px;padding:10px 4px;}
-    .book .body{padding:14px 14px;}
-    .book-head{flex-direction:column;align-items:flex-start;gap:10px;}
-    .actions{align-self:flex-start;}
-    table.sections{min-width:300px;font-size:13px;}
   }
-
   @media (prefers-reduced-motion: reduce){
     *{scroll-behavior:auto !important;}
   }
@@ -302,9 +218,54 @@
 
 <script>
 /* Uses the same Google Sheet as issues.html - paste the same Sheet ID here. */
-const SHEET_ID = "1RoiyRmLEn9rTEMQwmhMwBoseVxQDsIlqm_MXuRuJoGs";
+const SHEET_ID = "PASTE_YOUR_GOOGLE_SHEET_ID_HERE";
+const SHEET_NAME = "Books";
 
-const SHEET_NAMES = { books: "Books", bookSections: "Book Sections" };
+/* ============================================================
+   EDIT ME: bibliographic citation and a one-line description for
+   each book. Keyed by exact title as it appears in the Books sheet.
+   Leave a book out of this object (or leave its fields as null) if
+   you don't have the citation yet - the page handles that cleanly,
+   showing "citation not yet available" rather than guessing.
+
+   Fields:
+     author      - e.g. "A. D. Gorwala"
+     year        - a NUMBER (used for sorting) or null if unknown
+     publisher   - e.g. "Government of India"
+     description - one line, plain text. Leave "" for now.
+   ============================================================ */
+const CITATIONS = {
+  "For A Lasting Solution": {
+    author: null, year: null, publisher: null, description: ""
+  },
+  "Kaiser-E-Hind": {
+    author: null, year: null, publisher: null, description: ""
+  },
+  "The Making Of A Marriage (Roumela Alfresun)": {
+    author: null, year: null, publisher: null, description: ""
+  },
+  "Report On Public Administration": {
+    author: "A. D. Gorwala", year: 1951, publisher: "Government of India", description: ""
+  },
+  "The Indian Ideal": {
+    author: null, year: null, publisher: null, description: ""
+  },
+  "The Administrative Jungle": {
+    author: null, year: null, publisher: null, description: ""
+  },
+  "The Delusion Of Decontrol": {
+    author: null, year: null, publisher: null, description: ""
+  },
+  "The Mysore Administration": {
+    author: null, year: null, publisher: null, description: ""
+  },
+  "Not In Our Stars": {
+    author: null, year: null, publisher: null, description: ""
+  },
+  "The Role Of The Administor Past, Present And Future Compressed": {
+    author: null, year: null, publisher: null, description: ""
+  }
+};
 
 function gvizUrl(sheetName){
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -331,90 +292,58 @@ function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
-const HAS_HOVER = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-
-function pinHint(open){
-  if(HAS_HOVER) return open ? " — pinned open (click to unpin)" : " — hover to preview, click to pin";
-  return open ? " — tap to close" : " — tap to view";
+function buildCitationLine(c){
+  const parts = [];
+  if(c.author) parts.push(escapeHtml(c.author));
+  if(c.publisher) parts.push(escapeHtml(c.publisher));
+  if(c.year) parts.push(String(c.year));
+  return parts.join(', ');
 }
 
-function scrollToTop(e){
-  if(e) e.stopPropagation();
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  window.scrollTo({top: 0, behavior: reduceMotion ? 'auto' : 'smooth'});
-}
+function renderBook(book){
+  const citation = CITATIONS[book.title] || {author: null, year: null, publisher: null, description: ''};
+  const citationLine = buildCitationLine(citation);
 
-async function openArchivePdf(e){
-  e.preventDefault();
-  const btn = e.currentTarget;
-  const detailsUrl = btn.dataset.url;
-  const m = detailsUrl.match(/\/details\/([^\/]+)/);
-  const win = window.open('', '_blank');
-  if(!m){
-    if(win) win.location.href = detailsUrl;
-    return;
-  }
-  const identifier = m[1];
-  const original = btn.textContent;
-  btn.textContent = 'PDF…';
-  try{
-    const res = await fetch(`https://archive.org/metadata/${identifier}`);
-    const data = await res.json();
-    const pdfFile = (data.files || []).find(f => f.name && f.name.toLowerCase().endsWith('.pdf'));
-    const target = pdfFile
-      ? `https://archive.org/download/${identifier}/${encodeURIComponent(pdfFile.name)}`
-      : detailsUrl;
-    if(win) win.location.href = target;
-    else window.open(target, '_blank', 'noopener');
-  }catch(err){
-    console.error('PDF lookup failed:', err);
-    if(win) win.location.href = detailsUrl;
-    else window.open(detailsUrl, '_blank', 'noopener');
-  }finally{
-    btn.textContent = original;
-  }
-}
+  const citationHtml = citationLine
+    ? `<p class="book-citation">${citationLine}</p>`
+    : `<p class="book-citation missing">citation not yet available</p>`;
 
-function renderBook(book, sections){
-  const secs = sections.filter(s => String(s.book_id) === String(book.book_id));
-  const rows = secs.map(s => `<tr><td>${escapeHtml(s.section_title||'')}</td><td class="pages">${s.pages?escapeHtml(String(s.pages)):'—'}</td></tr>`).join("");
-  const artTable = secs.length ? `
-    <div class="table-scroll"><table class="sections"><thead><tr><th>Section</th><th>Page</th></tr></thead><tbody>${rows}</tbody></table></div>`
-    : `<p style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:12px;">No section-level index available.</p>`;
+  const descriptionHtml = citation.description
+    ? `<p class="book-description">${escapeHtml(citation.description)}</p>`
+    : `<p class="book-description"></p>`;
+
+  const linkHtml = book.archive_url
+    ? `<a class="scan-link" href="${book.archive_url}" target="_blank" rel="noopener">View scan on Archive.org →</a>`
+    : `<span class="no-scan">No scan linked yet</span>`;
 
   const div = document.createElement('div');
-  div.className = 'book';
-  const tocId = `toc-book-${book.book_id}`;
+  div.className = 'book-entry';
   div.innerHTML = `
-    <div class="spine">BOOK</div>
-    <div class="body">
-      <div class="book-head">
-        <div class="title">${escapeHtml(book.title)}</div>
-        <div class="actions">
-          <a class="scan-link" href="${book.archive_url}" target="_blank" rel="noopener">VIEW SCAN →</a>
-          <a class="scan-link pdf-link" href="${book.archive_url}" data-url="${book.archive_url}" onclick="openArchivePdf(event)" target="_blank" rel="noopener">PDF ↓</a>
-        </div>
-      </div>
-      <button class="toggle-btn" data-open="false" aria-controls="${tocId}">▸ ${secs.length} section${secs.length===1?"":"s"}${pinHint(false)}</button>
-      <div class="toc" id="${tocId}">${artTable}<a class="back-to-top" onclick="scrollToTop(event)">↑ Back to top</a></div>
-    </div>`;
-  const btn = div.querySelector('.toggle-btn');
-  btn.setAttribute('aria-expanded', 'false');
-  btn.addEventListener('click', () => {
-    const open = btn.dataset.open === "true";
-    div.classList.toggle('pinned', !open);
-    btn.dataset.open = (!open).toString();
-    btn.setAttribute('aria-expanded', (!open).toString());
-    btn.textContent = (open ? "▸ " : "▾ ") + secs.length + ` section${secs.length===1?"":"s"}` + pinHint(!open);
-  });
+    <h2 class="book-title">${escapeHtml(book.title)}</h2>
+    ${citationHtml}
+    ${descriptionHtml}
+    ${linkHtml}
+  `;
   return div;
+}
+
+function sortBooks(books){
+  return [...books].sort((a, b) => {
+    const ca = CITATIONS[a.title] || {};
+    const cb = CITATIONS[b.title] || {};
+    const ya = ca.year, yb = cb.year;
+    if(ya && yb) return ya - yb;
+    if(ya && !yb) return -1;   // known dates first
+    if(!ya && yb) return 1;
+    return a.title.localeCompare(b.title, undefined, {sensitivity: 'base'});
+  });
 }
 
 function showSetupInstructions(){
   document.getElementById('books-container').innerHTML = `
     <div class="setup-box">
       <h2>One step left: connect the database</h2>
-      <p>This page reads live from the same Google Sheet as the main archive.</p>
+      <p>This page reads live from the same Google Sheet as <code>issues.html</code>.</p>
       <ol>
         <li>Open <code>issues.html</code> and copy the Sheet ID you already pasted there.</li>
         <li>Paste that same ID into <code>books.html</code>, replacing <code>PASTE_YOUR_GOOGLE_SHEET_ID_HERE</code> near the top of its <code>&lt;script&gt;</code> tag.</li>
@@ -429,19 +358,20 @@ async function init(){
   }
   document.getElementById('books-container').innerHTML = `<div class="loading">Loading the books…</div>`;
   try{
-    const [books, sections] = await Promise.all([
-      fetchSheet(SHEET_NAMES.books),
-      fetchSheet(SHEET_NAMES.bookSections)
-    ]);
-    document.getElementById('result-count').textContent = `${books.length} book${books.length===1?"":"s"}`;
+    const books = await fetchSheet(SHEET_NAME);
+    const sorted = sortBooks(books);
+
+    document.getElementById('result-count').textContent =
+      `${books.length} book${books.length===1?"":"s"}, sorted by publication date where known`;
     document.getElementById('footer-note').textContent =
       `Source scans hosted on the Internet Archive · Data last synced ${new Date().toLocaleString('en-GB')}`;
+
     const container = document.getElementById('books-container');
     container.innerHTML = "";
-    if(books.length === 0){
+    if(sorted.length === 0){
       container.innerHTML = `<div class="empty">No books catalogued yet.</div>`;
     } else {
-      books.forEach(b => container.appendChild(renderBook(b, sections)));
+      sorted.forEach(b => container.appendChild(renderBook(b)));
     }
   }catch(err){
     console.error(err);
